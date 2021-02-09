@@ -2,88 +2,88 @@
 #include <Windows.h>
 #include <stdio.h>
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-/*функция потока*/
+/*С„СѓРЅРєС†РёСЏ РїРѕС‚РѕРєР°*/
 DWORD WINAPI ThreadProc(LPVOID lpParameter)
 {
 	char screenInfo[100], mmxInfo[100], * s;
 	s = (char*)lpParameter;
 	typedef int(*importFunction)(char*);
 	importFunction DLLinfo;
-	/*загрузка библиотеки*/
+	/*Р·Р°РіСЂСѓР·РєР° Р±РёР±Р»РёРѕС‚РµРєРё*/
 	HINSTANCE hinstLib = LoadLibrary("info.dll");
 	if (hinstLib == NULL)
 	{
-		sprintf(s, "Ошибка! Не удалось загрузить библиотеку \"info.dll\"!");
+		sprintf(s, "РћС€РёР±РєР°! РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ Р±РёР±Р»РёРѕС‚РµРєСѓ \"info.dll\"!");
 		return 1;
 	}
 	DLLinfo = (importFunction)GetProcAddress(hinstLib, 
 		"getScreenInformation");
 	if (DLLinfo == NULL)
 	{
-		sprintf(s, "Ошибка! Функция \"getScreenInformation\" не найдена!");
+		sprintf(s, "РћС€РёР±РєР°! Р¤СѓРЅРєС†РёСЏ \"getScreenInformation\" РЅРµ РЅР°Р№РґРµРЅР°!");
 		FreeLibrary(hinstLib);
 		return 1;
 	}
-	/*получение информации о ширине экрана*/
+	/*РїРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С€РёСЂРёРЅРµ СЌРєСЂР°РЅР°*/
 	DLLinfo(screenInfo);
 
 	DLLinfo = (importFunction)GetProcAddress(hinstLib,
 		"getMMXInformation");
 	if (DLLinfo == NULL)
 	{
-		sprintf(s, "Ошибка! Функция \"getMMXInformation\" не найдена!");
+		sprintf(s, "РћС€РёР±РєР°! Р¤СѓРЅРєС†РёСЏ \"getMMXInformation\" РЅРµ РЅР°Р№РґРµРЅР°!");
 		FreeLibrary(hinstLib);
 		return 1;
 	}
-	/*получение информации о поддержки MMX*/
+	/*РїРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕРґРґРµСЂР¶РєРё MMX*/
 	DLLinfo(mmxInfo);
 	FreeLibrary(hinstLib);
 	sprintf(s, "%s, %s", screenInfo, mmxInfo);
 	return 0;
 }
-/*главная подпрограмма*/
+/*РіР»Р°РІРЅР°СЏ РїРѕРґРїСЂРѕРіСЂР°РјРјР°*/
 int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst,
 	LPSTR lpCmdLine, int nCmdShow)
 {
 	char szClassName[] = "MyClass";
 	MSG msg;
-	//элемент структуры класса окна
+	//СЌР»РµРјРµРЅС‚ СЃС‚СЂСѓРєС‚СѓСЂС‹ РєР»Р°СЃСЃР° РѕРєРЅР°
 	WNDCLASS wcl;
-	//дескриптор окна
+	//РґРµСЃРєСЂРёРїС‚РѕСЂ РѕРєРЅР°
 	HWND hWnd; 
-	/*дескриптор экземляра приложения, в котором
-	находится процедура обработки*/
+	/*РґРµСЃРєСЂРёРїС‚РѕСЂ СЌРєР·РµРјР»СЏСЂР° РїСЂРёР»РѕР¶РµРЅРёСЏ, РІ РєРѕС‚РѕСЂРѕРј
+	РЅР°С…РѕРґРёС‚СЃСЏ РїСЂРѕС†РµРґСѓСЂР° РѕР±СЂР°Р±РѕС‚РєРё*/
 	wcl.hInstance = hThisInst;
-	/*указатель на строку, содержащую
-	имя класса*/
+	/*СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЃС‚СЂРѕРєСѓ, СЃРѕРґРµСЂР¶Р°С‰СѓСЋ
+	РёРјСЏ РєР»Р°СЃСЃР°*/
 	wcl.lpszClassName = szClassName;
-	/*указатель на процедуру обработки сообщений*/
+	/*СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїСЂРѕС†РµРґСѓСЂСѓ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕРѕР±С‰РµРЅРёР№*/
 	wcl.lpfnWndProc = WndProc;
-	//стиль класса окна
+	//СЃС‚РёР»СЊ РєР»Р°СЃСЃР° РѕРєРЅР°
 	wcl.style = CS_HREDRAW | CS_VREDRAW;
-	//дескриптор пиктограммы
+	//РґРµСЃРєСЂРёРїС‚РѕСЂ РїРёРєС‚РѕРіСЂР°РјРјС‹
 	wcl.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	//дескриптор курсора
+	//РґРµСЃРєСЂРёРїС‚РѕСЂ РєСѓСЂСЃРѕСЂР°
 	wcl.hCursor= LoadCursor(NULL, IDC_ARROW);
-	//указатель на строку, содержащую имя меню
+	//СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЃС‚СЂРѕРєСѓ, СЃРѕРґРµСЂР¶Р°С‰СѓСЋ РёРјСЏ РјРµРЅСЋ
 	wcl.lpszMenuName = NULL;
-	//дополнительные параметры
+	//РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
 	wcl.cbClsExtra = 0;
-	//дополнительные параметры
+	//РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
 	wcl.cbWndExtra = 0;
-	//цвет фона окна
+	//С†РІРµС‚ С„РѕРЅР° РѕРєРЅР°
 	wcl.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-	//регистрация класса
+	//СЂРµРіРёСЃС‚СЂР°С†РёСЏ РєР»Р°СЃСЃР°
 	RegisterClass(&wcl);
-	//создание окна
+	//СЃРѕР·РґР°РЅРёРµ РѕРєРЅР°
 	hWnd = CreateWindow(szClassName, 
-		"Индивидуальное задание по УРВС",
+		"РРЅРґРёРІРёРґСѓР°Р»СЊРЅРѕРµ Р·Р°РґР°РЅРёРµ РїРѕ РЈР Р’РЎ",
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN |
 		WS_CLIPSIBLINGS, 100, 50, 700, 120,
 		HWND_DESKTOP, NULL, hThisInst, NULL);
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-	//цикл обработки сообщений
+	//С†РёРєР» РѕР±СЂР°Р±РѕС‚РєРё СЃРѕРѕР±С‰РµРЅРёР№
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
 		TranslateMessage(&msg);
@@ -91,7 +91,7 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst,
 	}
 	return msg.lParam;
 }
-/*процедура обработки сообщений*/
+/*РїСЂРѕС†РµРґСѓСЂР° РѕР±СЂР°Р±РѕС‚РєРё СЃРѕРѕР±С‰РµРЅРёР№*/
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, 
 	WPARAM wParam, LPARAM lParam)
 {
@@ -100,16 +100,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	HDC hdc;
 	PAINTSTRUCT ps;
 	static char text[100];
-	//обработка сообщений
+	//РѕР±СЂР°Р±РѕС‚РєР° СЃРѕРѕР±С‰РµРЅРёР№
 	switch (message)
 	{
 	case WM_CREATE:
-		//создание потока
+		//СЃРѕР·РґР°РЅРёРµ РїРѕС‚РѕРєР°
 		hThread = CreateThread(NULL, 0, ThreadProc,
 			text, 0, &idThread);
 		if (hThread == NULL)
 		{
-			sprintf(text, "Ошибка! Не удалось создать поток!");
+			sprintf(text, "РћС€РёР±РєР°! РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РїРѕС‚РѕРє!");
 			return GetLastError();
 		}
 		WaitForSingleObject(hThread, INFINITE);
@@ -117,7 +117,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		//вывод строки в окно
+		//РІС‹РІРѕРґ СЃС‚СЂРѕРєРё РІ РѕРєРЅРѕ
 		TextOut(hdc, 10, 10, text, strlen(text));
 		EndPaint(hWnd, &ps);
 		break;

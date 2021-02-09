@@ -1,14 +1,14 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <Windows.h>
-//получение информации о ширине окна
+//РїРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С€РёСЂРёРЅРµ РѕРєРЅР°
 extern "C" __declspec(dllexport) int getScreenInformation(char *infoString)
 {
-	sprintf(infoString, "Максимальная ширина окна %d",
+	sprintf(infoString, "РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ С€РёСЂРёРЅР° РѕРєРЅР° %d",
 		GetSystemMetrics(SM_CXFULLSCREEN));
 	return 0;
 }
-//получение информации о поддержке MMX
+//РїРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕРґРґРµСЂР¶РєРµ MMX
 extern "C" __declspec(dllexport) int getMMXInformation(char *infoString)
 {
 	bool MMX = false;
@@ -16,14 +16,14 @@ extern "C" __declspec(dllexport) int getMMXInformation(char *infoString)
 	{
 		MOV EAX,1
 		CPUID
-		BT EDX,23; проверить значение 23 бита
-		JNC NO_MMX; переход, если бит равен 0
+		BT EDX,23; РїСЂРѕРІРµСЂРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ 23 Р±РёС‚Р°
+		JNC NO_MMX; РїРµСЂРµС…РѕРґ, РµСЃР»Рё Р±РёС‚ СЂР°РІРµРЅ 0
 		MOV MMX,1
 	NO_MMX:
 	}
 	if (MMX)
-		sprintf(infoString, "Технология MMX поддерживается");
+		sprintf(infoString, "РўРµС…РЅРѕР»РѕРіРёСЏ MMX РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ");
 	else
-		sprintf(infoString, "Технология MMX не поддерживается");
+		sprintf(infoString, "РўРµС…РЅРѕР»РѕРіРёСЏ MMX РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ");
 	return 0;
 }
